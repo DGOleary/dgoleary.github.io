@@ -180,6 +180,7 @@
         submitBut.addEventListener("click", function () {
             console.log("submit event");
             guessCount--;
+            alert("Guess again! Remaining guesses: "+guessCount);
             input = document.getElementById("minisubmit").value;
             console.log("Final guess: " + input);
             //console.log(fig);
