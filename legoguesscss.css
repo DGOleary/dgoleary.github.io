@@ -1,0 +1,151 @@
+#logo {
+    /*border-style: solid;
+    border-color: black;
+    margin-left: -85%;
+   margin-right: auto;
+    margin-left: 20%;
+    height: 30%;
+    width: auto;*/
+    border-style: solid;
+    border-color: black;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 30%;
+
+}
+
+body {
+    background-color: #D81B23;
+    /*position: relative;
+    margin: auto;
+    width: 50%;
+    */
+}
+
+* {
+    font-family: fantasy;
+    color: black;
+}
+
+/*
+#miniguess{
+    margin-left: 10%;
+    height: 10%;
+    width: 50%;
+}
+*/
+.textentry {
+    background-color: darkslategrey;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
+}
+
+.button {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 25%;
+}
+
+.textclass {
+    font-size: 2vmax;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 10%;
+}
+
+.dropdownfigs {
+    display: none;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+}
+
+.dropdown:hover .dropdownfigs {
+    display: block;
+}
+
+.exampleimages {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 500%;
+}
+
+.textclassresult {
+    font-size: 70%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400%;
+}
+
+/*adjust so text always fits inside*/
+.textclassbutton {
+    font-size: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400%;
+    height: auto;
+}
+
+.rights {
+    font-size: .9vmin;
+    position: fixed;
+    bottom: 0;
+}
+
+#help {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    width: 5%;
+    height: auto;
+}
+
+#help2 {
+    display: block;
+    position: fixed;
+    width: 400%;
+    height: auto;
+    z-index: 1;
+}
+
+.helpclass {
+    display: none;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    width: 30%;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 1;
+}
+
+.dropdown:hover .helpclass {
+    display: block;
+}
+
+.guesscol {
+    float: right;
+    width: 20.5vw;
+    padding: 1vw;
+}
+
+.guessrow::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.guesstext {
+    font-size: 2vmax;
+    margin-left: 3.75vw;
+}

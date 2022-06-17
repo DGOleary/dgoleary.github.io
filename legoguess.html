@@ -1,0 +1,280 @@
+<!----Program written by Darby Oleary June 2022--->
+<!DOCTYPE html>
+<html>
+<!----Lego font is from https://fontmeme.com/lego-font/--->
+
+<head>
+    <title>Minifigured</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="legoguesscss.css">
+    <link rel="icon" href="favicon.png">
+    <!----<img src="minifiguredlogocut.png" class="logo">--->
+
+</head>
+
+<body>
+    <div id="gamelogo">
+        <img src="logofixclear.png" id="logo">
+    </div>
+    <div class="dropdown">
+        <img src="help.png" id="help">
+        <div class="helpclass">
+            <p>How the game works
+                <br>
+                Search for a Minifigure in the search tab, then hover over the list and click the name of the figure you
+                want to guess, and click "Submit", if you dont see a list when you hover, then scroll
+                <br>
+                The leftmost circle is the part count of the minifigure you guessed, yellow is too many parts compared
+                to the answer, red is too little, and green is correct
+                <br>
+                The second circle is the setcount of the minifigure you guessed, yellow is too many sets compared to the
+                answer, red is too little, and green is correct
+                <br>
+                The third circle is the difference in name length of the minifigures, yellow is close to the lenght, red
+                is far off, and green is the correct length
+                <br>
+                The fourth circle is the release year of a set the minifigure you guessed is in, yellow is too recent
+                compared to the answer, red is too old, and green is correct
+            </p>
+        </div>
+    </div>
+    <div class="guessrow">
+        <div class="guesscol">
+            <img src="yearclose.png" id="yearval" style="width: 10vw">
+            <br>
+            <t class="guesstext year" id="yearvaltext">1978</t>
+        </div>
+        <div class="guesscol">
+            <img src="close.png" id="lexval" style="width: 10vw">
+            <br>
+            <t class="guesstext lex" id="lexvaltext">0%</t>
+        </div>
+        <div class="guesscol">
+            <img src="close.png" id="setnumval" style="width: 10vw">
+            <br>
+            <t class="guesstext num" id="numvaltext">0</t>
+        </div>
+        <div class="guesscol">
+            <img src="close.png" id="partval" style="width: 10vw">
+            <br>
+            <t class="guesstext part" id="partvaltext">3</t>
+        </div>
+    </div>
+    <div id="box"><br></div>
+    <p id="label" class="textclass">
+        Search for a Minifigure
+    </p>
+    <input type="text" id="miniguess" class="textentry">
+    <input type="button" value="Submit" id="guessbutton" class="button">
+    <br>
+    <t class="textclass">Answer</t>
+    <br>
+    <input type="text" id="minisubmit" class="textentry">
+    <input type="button" value="Submit" id="submitbutton" class="button">
+    <div class="dropdown">
+        <br>
+        <div class="textclass resulttext">Search Results</div>
+        <div class="dropdownfigs">
+            <p id="results" class="textclass"> </p>
+        </div>
+    </div>
+    <div class="rights">
+        <t>Minifigured has no association with the minifigure, The Lego Group, or any properties shown,
+            <br>
+            Lego and all related trademarks and copyrights are the property of The Lego Group and all other
+            copyrights and trademarks belong to their respective owners
+            <br> Lego font from https://fontmeme.com/lego-font/
+        </t>
+    </div>
+
+</body>
+<script>
+    //random minifig finder
+    //Maybe do not allow any minifigure without an image?
+    async function randomMinifig() {
+        let figs = await fetch("https://rebrickable.com/api/v3/lego/minifigs/?key=ff0965a16d38556b5e961784090b60c2");
+        figs = await figs.json();
+        console.log(figs);
+        //finding the live figcount
+        let figCount = figs.count;
+        let figInd = Math.floor(Math.random() * figCount);
+        //if the set index is over 100 the number is converted to the page and index of the data in 100 long arrays of sets
+        if (figInd > 99) {
+            console.log(figInd + " minifig index overflow, adjusting for length")
+            //converts the index to a page
+            let page = Math.ceil(figInd / 100);
+            //finds the offset within the page of the set
+            console.log("page: " + page);
+            figInd = figInd % 100;
+            let newData = "https://rebrickable.com/api/v3/lego/minifigs/?key=ff0965a16d38556b5e961784090b60c2" + "&page=" + page;
+            console.log(newData);
+            figs = await fetch(newData);
+            figs = await figs.json();
+        }
+        console.log(figs);
+        console.log(figInd);
+        let figArr = figs.results;
+        let fig = figArr[figInd];
+        console.log(fig);
+        console.log("minifig: " + fig.name);
+        console.log("return value: " + fig);
+        console.log(typeof (fig));
+        return fig;
+    }
+    //input loop to guess the minifigure
+    //hint categories are theme by release year, year released, number of sets appeared in, 
+    //numerical value of set first appeared in, if set number digit count is correct, number of parts in fig
+    //Possibly add lexographical similarity to the correct minifig?
+    async function guessMinifig(fig) {
+        fig = await fig;
+        console.log(fig);
+        let guessFig;
+        //guessCount should be set to 10 maybe? Check after playtesting if 10 is a fun limit or not.
+        //guessCount is set to 1 to test features without having to do an annoying loop, remember to change later.
+        let guessCount = 10;
+        let input;
+        //alert("Search for a minifig");
+        //let check=document.getElementById("submitbutton").clicked==false;
+
+        let submitGuess = document.getElementById("guessbutton");
+        //event listener that checks if the guess button has been clicked and when it is it reprints a new screen of guesses
+        submitGuess.addEventListener("click", async function () {
+            console.log("guess event");
+            input = document.getElementById("miniguess").value;
+            console.log("Input: " + input);
+            input = await fetch("https://rebrickable.com/api/v3/lego/minifigs/?key=ff0965a16d38556b5e961784090b60c2&search=" + input);
+            input = await input.json();
+            //console.log(input);
+            let listOfResults = "";
+            let idList = [];
+            //adds an image and a button for each search result entry to the dropdown list
+            for (let i = 0; i < input.results.length; i++) {
+                //console.log(input.results[i]);
+                if (input.results[i].set_img_url == null) {
+                    //console.log("Minifig entry raw: ");
+                    listOfResults += "<input type=\"button\"  value=\"" + input.results[i].name + "\" id=\"" + input.results[i].set_num + "\" class=\"textclassbutton\" >" + "<br>";
+                    //listOfResults += "<t class=\"textclassresult\">" + input.results[i].name + "</t>" + "<br>";
+                } else {
+                    //console.log(listOfResults += "<input type=\"button\" onclick=\"enterFig(\""+input.results[i].set_num+"\")\" value=\"" + input.results[i].name + "\" id=\"" + input.results[i].set_num + "\" class=\"textclassresult\" >" + "<img src=\"" + input.results[i].set_img_url + "\" class=\"exampleimages\"> " + "<br>");
+                    listOfResults += "<input type=\"button\"  value=\"" + input.results[i].name + "\" id=\"" + input.results[i].set_num + "\" class=\"textclassbutton\" >" + "<img src=\"" + input.results[i].set_img_url + "\" class=\"exampleimages\"> " + "<br>"; //<3 Sara
+                    //listOfResults += "<t class=\"textclassresult\">" + input.results[i].name + "</t>" + "<img src=\"" + input.results[i].set_img_url + "\" class=\"exampleimages\">" + "<br>";
+                }
+                idList.push(input.results[i].set_num)
+                //let minifigButId=await input.results[i].set_num;
+                //let testing=await document.getElementById(input.results[i].set_num);
+                //console.log(testing);
+
+            }
+            document.getElementById("results").innerHTML = listOfResults;
+            for (let i = 0; i < input.results.length; i++) {
+                document.getElementById(idList[i]).addEventListener("click", function () {
+                    guessFig = idList[i];
+                    document.getElementById("minisubmit").value = document.getElementById(idList[i]).value;
+                    window.scrollTo(0, 0);
+                });
+            }
+        }, true);
+
+        //event listener to submit the guess which also decrements the amount of guesses
+        let submitBut = document.getElementById("submitbutton");
+        submitBut.addEventListener("click", function () {
+            console.log("submit event");
+            guessCount--;
+            input = document.getElementById("minisubmit").value;
+            console.log("Final guess: " + input);
+            //console.log(fig);
+            //console.log("Real answer: " + fig.name);
+            console.log(input == fig.name);
+            updateCounters(fig, guessFig);
+            //change later to something besides an alert, looks bad
+            if (input == fig.name) {
+                alert("You win!");
+            } else if (guessCount == 0) {
+                alert("You lose!");
+            }
+        }, true);
+    }
+    //numerical value of set first appeared in, if set number digit count is correct, number of parts in fig
+    //Possibly add lexographical similarity to the correct minifig?
+    //Using the set number will take a bit of work, add that later, instead just use how many sets it appears in for now.
+    async function updateCounters(fig, guessFig) {
+        let id = guessFig;
+        guessFig = await fetch("https://rebrickable.com/api/v3/lego/minifigs/?key=ff0965a16d38556b5e961784090b60c2&search=" + guessFig);
+        guessFig = await guessFig.json();
+        guessFig = guessFig.results[0];
+        console.log(guessFig);
+        let setCount = await fetch("https://rebrickable.com/api/v3/lego/minifigs/" + id + "/sets/?key=ff0965a16d38556b5e961784090b60c2&ordering=name");
+        setCount = await setCount.json();
+        console.log(setCount.results[0]);
+        let guessYear = await fetch("https://rebrickable.com/api/v3/lego/sets/" + setCount.results[0].set_num + "/?key=ff0965a16d38556b5e961784090b60c2");
+        guessYear = await guessYear.json();
+        guessYear = guessYear.year;
+        setCount = setCount.count;
+        console.log(setCount);
+        let figSetCount = await fetch("https://rebrickable.com/api/v3/lego/minifigs/" + fig.set_num + "/sets/?key=ff0965a16d38556b5e961784090b60c2&ordering=name");
+        figSetCount = await figSetCount.json();
+        let year = await fetch("https://rebrickable.com/api/v3/lego/sets/" + figSetCount.results[0].set_num + "/?key=ff0965a16d38556b5e961784090b60c2");
+        year = await year.json();
+        year = year.year;
+        figSetCount = figSetCount.count;
+        console.log(figSetCount);
+        let figVal = fig.name.length;//+fig.name.charCodeAt(0);
+        let guessVal = guessFig.name.length;//+guessFig.name.charCodeAt(0);
+        let compareVal = Math.abs(Math.ceil(figVal - guessVal));
+        //year=year.year;
+        //guessYear=guessYear.year;
+        //part count guess
+        //guessed fig has more parts
+        if (fig.num_parts - guessFig.num_parts < 0) {
+            document.getElementById("partval").src = "close.png";
+            //guessed fig has less parts
+        } else if (fig.num_parts - guessFig.num_parts > 0) {
+            document.getElementById("partval").src = "wrong.png";
+            //correct part number
+        } else {
+            document.getElementById("partval").src = "correct.png";
+        }
+        document.getElementById("partvaltext").textContent = guessFig.num_parts;
+        //set count guess
+        //guessed fig has more sets
+        if (figSetCount - setCount < 0) {
+            document.getElementById("setnumval").src = "close.png";
+            //guessed fig has less parts
+        } if (figSetCount - setCount > 0) {
+            document.getElementById("setnumval").src = "wrong.png";
+            //correct set number
+        } else {
+            document.getElementById("setnumval").src = "correct.png";
+        }
+        document.getElementById("numvaltext").textContent = setCount;
+        //lexographical guess
+        //exact number
+        if (compareVal == 0) {
+            document.getElementById("lexval").src = "correct.png";
+            //close 
+        } else if (compareVal < 10) {
+            document.getElementById("lexval").src = "close.png";
+            //far off
+        } else {
+            document.getElementById("lexval").src = "wrong.png";
+        }
+        document.getElementById("lexvaltext").textContent = compareVal;
+        //year guess
+        //year is too recent
+        if (year - guessYear < 0) {
+            document.getElementById("yearval").src = "yearclose.png";
+            //year is too old
+        } else if (year - guessYear > 0) {
+            document.getElementById("yearval").src = "yearwrong.png";
+            //year is correct
+        } else {
+            document.getElementById("yearval").src = "yearcorrect.png";
+        }
+        console.log(guessYear);
+        document.getElementById("yearvaltext").textContent = guessYear;
+    }
+    let minifig = randomMinifig();
+    guessMinifig(minifig);
+</script>
+
+</html>
