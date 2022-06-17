@@ -35,6 +35,8 @@
                 <br>
                 The fourth circle is the release year of a set the minifigure you guessed is in, yellow is too recent
                 compared to the answer, red is too old, and green is correct
+                <br>
+                You have 10 guesses, good luck!
             </p>
         </div>
     </div>
@@ -60,7 +62,7 @@
             <t class="guesstext part" id="partvaltext">3</t>
         </div>
     </div>
-    <div id="box"><br></div>
+    <div id="answerfig"></div>
     <p id="label" class="textclass">
         Search for a Minifigure
     </p>
@@ -180,7 +182,9 @@
         submitBut.addEventListener("click", function () {
             console.log("submit event");
             guessCount--;
-            alert("Guess again! Remaining guesses: "+guessCount);
+            if (guessCount != 0) {
+                alert("Guess again! Remaining guesses: " + guessCount);
+            }
             input = document.getElementById("minisubmit").value;
             console.log("Final guess: " + input);
             //console.log(fig);
@@ -190,8 +194,10 @@
             //change later to something besides an alert, looks bad
             if (input == fig.name) {
                 alert("You win!");
+                document.getElementById("answerfig").innerHTML = "<img src=\"" + fig.set_img_url + "\" class=\"finalimage\">";
             } else if (guessCount == 0) {
-                alert("You lose!");
+                document.getElementById("answerfig").innerHTML = "<img src=\"" + fig.set_img_url + "\" class=\"finalimage\">";
+                alert("You lose! Correct answer: " + fig.name);
             }
         }, true);
     }
