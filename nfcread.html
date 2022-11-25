@@ -27,8 +27,9 @@
                     document.getElementById("output").textContent=serialNumber;
                     document.getElementById("outputr").textContent=message.records.data;
                     document.getElementById("output1").textContent=message.records.getPayload();
-                    document.getElementById("output2").textContent=message.records.payload;
-                    document.getElementById("output3").textContent=message.records.RTD_TEXT;
+                    document.getElementById("output2").textContent=message.records.toRecords();
+                    const decoder=new TextDecoder(message.record.encoding);
+                    document.getElementById("output3").textContent=decoder.decode(message.records.data);
                 });
                 
             } catch (error){
