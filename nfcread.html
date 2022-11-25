@@ -25,11 +25,7 @@
                 });
                 reader.addEventListener("reading", function({message, serialNumber}){
                     document.getElementById("output").textContent=serialNumber;
-                    document.getElementById("outputr").textContent=message.records.data;
-                    document.getElementById("output1").textContent=message.records.getPayload();
-                    document.getElementById("output2").textContent=message.records.toRecords();
-                    const decoder=new TextDecoder(message.record.encoding);
-                    document.getElementById("output3").textContent=decoder.decode(message.records.data);
+                    document.getElementById("outputr").textContent=message.records;
                 });
                 
             } catch (error){
