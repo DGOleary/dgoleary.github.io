@@ -19,7 +19,7 @@
                 });
                 reader.addEventListener("reading", function({message, serialNumber}){
                     document.getElementById("output").textContent=serialNumber;
-                    document.getElementById("outputr").textContent=message.records;
+                    document.getElementById("outputr").textContent=message.records.toString();
 
                 });
                 
