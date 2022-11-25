@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>NFC Reader</head>
+    <body>
+        <input type="button" value="Read" id="readbutton">
+        <t id="output">output</t>
+    </body>
+    <script>
+        const reader = new NDEFReader();
+        let but=document.getElementById("readbutton");
+        but.addEventListener("click", async function(){
+            console.log("click");
+            try{
+                await reader.scan();
+                reader.addEventListener("readingerror", function(){
+                    alert("Error reading");
+                });
+                reader.addEventListener("reading", function({message, serialNumber}){
+                    document.getElementById("output").textContent=serialNumber;
+                    console.log(message.records);
+                });
+            } catch (error){
+                alert("Error reading");
+            }
+        });
+    </script>
+</html>
