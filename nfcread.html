@@ -4,6 +4,8 @@
     <body>
         <input type="button" value="Read" id="readbutton">
         <t id="output">output</t>
+        <br>
+        <t id="outputr">output</t>
     </body>
     <script>
         const reader = new NDEFReader();
@@ -17,8 +19,10 @@
                 });
                 reader.addEventListener("reading", function({message, serialNumber}){
                     document.getElementById("output").textContent=serialNumber;
-                    console.log(message.records);
+                    document.getElementById("outputr").textContent=message.records;
+
                 });
+                
             } catch (error){
                 alert("Error reading");
             }
