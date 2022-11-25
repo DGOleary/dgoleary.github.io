@@ -6,6 +6,12 @@
         <t id="output">output</t>
         <br>
         <t id="outputr">output</t>
+        <br>
+        <t id="output1">output</t>
+        <br>
+        <t id="output2">output</t>
+        <br>
+        <t id="output3">output</t>
     </body>
     <script>
         const reader = new NDEFReader();
@@ -20,7 +26,9 @@
                 reader.addEventListener("reading", function({message, serialNumber}){
                     document.getElementById("output").textContent=serialNumber;
                     document.getElementById("outputr").textContent=message.records.toString();
-
+                    document.getElementById("output1").textContent=message.records.getPayload();
+                    document.getElementById("output2").textContent=message.records.payload;
+                    document.getElementById("output3").textContent=message.records.RTD_TEXT;
                 });
                 
             } catch (error){
