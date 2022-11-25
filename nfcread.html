@@ -25,7 +25,14 @@
                 });
                 reader.addEventListener("reading", function({message, serialNumber}){
                     document.getElementById("output").textContent=serialNumber;
-                    document.getElementById("outputr").textContent=message.records;
+                    var text;
+                    for(const record of message.records){
+                        text+="Type: "+ record.recordType;
+                        text+="MIME type: "+ record.mediaType;
+                        text+="ID"+ record.id;
+                        text+="/n";
+                    }
+                    document.getElementById("outputr").textContent=text;
                 });
                 
             } catch (error){
