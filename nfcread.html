@@ -6,12 +6,6 @@
         <t id="output">output</t>
         <br>
         <t id="outputr">output</t>
-        <br>
-        <t id="output1">output</t>
-        <br>
-        <t id="output2">output</t>
-        <br>
-        <t id="output3">output</t>
     </body>
     <script>
         const reader = new NDEFReader();
@@ -30,7 +24,7 @@
                         text+="Type: "+ record.recordType;
                         text+="MIME type: "+ record.mediaType;
                         text+="ID"+ record.id;
-                        text+="/n";
+                        text+="<br>";
                     }
                     document.getElementById("outputr").textContent=text;
                 });
